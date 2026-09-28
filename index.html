@@ -618,6 +618,7 @@ function switchTab(evt, tabId) {
 }
 
 /* ==================== PHẦN RANDOM ACC (ĐÃ SỬA LỖI HIỂN THỊ) ==================== */
+const CURRENT_ACC_VERSION = "1"; 
 const defaultAccounts = [
   {user:"Shin2xx2", pass:"123456789az"},
   {user:"tranmychau4x", pass:"1100110a"},
@@ -1395,6 +1396,23 @@ const defaultAccounts = [
 
 let accounts = JSON.parse(localStorage.getItem("accList")) || defaultAccounts;
 let count = Number(localStorage.getItem("count")) || 0;
+  // Kiểm tra phiên bản kho acc trong localStorage
+let savedVersion = localStorage.getItem("accVersion");
+let accounts;
+
+if (savedVersion !== CURRENT_ACC_VERSION) {
+  // Nếu phiên bản thay đổi (tức là bạn vừa update code), tự động nạp kho mới và cập nhật phiên bản
+  accounts = [...defaultAccounts];
+  localStorage.setItem("accList", JSON.stringify(accounts));
+  localStorage.setItem("accVersion", CURRENT_ACC_VERSION);
+  // (Tùy chọn) Bạn có thể reset lại số đếm đã bấm nếu muốn: 
+  // localStorage.setItem("count", 0); 
+} else {
+  // Nếu phiên bản cũ giữ nguyên, lấy danh sách acc hiện tại người dùng đang dùng dở
+  accounts = JSON.parse(localStorage.getItem("accList")) || defaultAccounts;
+}
+
+let count = Number(localStorage.getItem("count"))
 
 document.getElementById("count").innerText = count;
 document.getElementById("remaining").innerText = accounts.length;
